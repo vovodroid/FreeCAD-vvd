@@ -128,7 +128,7 @@ void FCBRepAlgoAPI_BooleanOperation::Build(const Message_ProgressRange& progress
     }
     else {
 #if OCC_VERSION_HEX >= 0x070600
-        BRepAlgoAPI_BooleanOperation::Build(progressRange);
+        BRepAlgoAPI_BooleanOperation::Build(/*progressRange*/);
 #else
         BRepAlgoAPI_BooleanOperation::Build();
 #endif
