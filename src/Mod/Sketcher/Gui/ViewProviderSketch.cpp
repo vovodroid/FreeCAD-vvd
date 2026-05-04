@@ -704,6 +704,9 @@ ViewProviderSketch::ViewProviderSketch()
 ViewProviderSketch::~ViewProviderSketch()
 {
     connectionToolWidget.disconnect();
+    if (pcGridAnnotation) {
+        pcGridAnnotation->unref();
+    }
 }
 
 void ViewProviderSketch::slotUndoDocument(const Gui::Document& /*doc*/)
@@ -4222,7 +4225,12 @@ bool ViewProviderSketch::setEdit(int ModNum)
     auto gridnode = getGridNode();
     Base::Placement plm = getEditingPlacement();
     setGridOrientation(plm.getPosition(), plm.getRotation());
-    addNodeToRoot(gridnode);
+
+    pcGridAnnotation = new Gui::So3DAnnotation;
+    pcGridAnnotation->ref();
+    pcGridAnnotation->setName("SketchGridAnnotation");
+    pcGridAnnotation->addChild(gridnode);
+    addNodeToRoot(pcGridAnnotation);
 
     // create the container for the additional edit data
     assert(!isInEditMode());
@@ -4531,6 +4539,12 @@ void ViewProviderSketch::unsetEdit(int ModNum)
     setGridEnabled(nullptr);
     auto gridnode = getGridNode();
     pcRoot->removeChild(gridnode);
+
+    if (pcGridAnnotation) {
+        pcRoot->removeChild(pcGridAnnotation);
+        pcGridAnnotation->unref();
+        pcGridAnnotation = nullptr;
+    }
 
     if (isInEditMode()) {
         if (sketchHandler) {
