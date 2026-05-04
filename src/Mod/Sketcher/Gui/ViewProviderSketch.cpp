@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *   Copyright (c) 2009 Juergen Riegel <juergen.riegel@web.de>             *
  *                                                                         *
@@ -660,6 +661,9 @@ ViewProviderSketch::ViewProviderSketch()
 ViewProviderSketch::~ViewProviderSketch()
 {
     connectionToolWidget.disconnect();
+    if (pcGridAnnotation) {
+        pcGridAnnotation->unref();
+    }
 }
 
 void ViewProviderSketch::slotUndoDocument(const Gui::Document& /*doc*/)
@@ -3481,7 +3485,12 @@ bool ViewProviderSketch::setEdit(int ModNum)
     auto gridnode = getGridNode();
     Base::Placement plm = getEditingPlacement();
     setGridOrientation(plm.getPosition(), plm.getRotation());
-    addNodeToRoot(gridnode);
+
+    pcGridAnnotation = new Gui::So3DAnnotation;
+    pcGridAnnotation->ref();
+    pcGridAnnotation->setName("SketchGridAnnotation");
+    pcGridAnnotation->addChild(gridnode);
+    addNodeToRoot(pcGridAnnotation);
     setGridEnabled(true);
 
     // create the container for the additional edit data
@@ -3740,6 +3749,12 @@ void ViewProviderSketch::unsetEdit(int ModNum)
     setGridEnabled(false);
     auto gridnode = getGridNode();
     pcRoot->removeChild(gridnode);
+
+    if (pcGridAnnotation) {
+        pcRoot->removeChild(pcGridAnnotation);
+        pcGridAnnotation->unref();
+        pcGridAnnotation = nullptr;
+    }
 
     Workbench::leaveEditMode();
 

@@ -46,6 +46,7 @@
 #include "ShortcutListener.h"
 #include "Utils.h"
 
+#include <Gui/Inventor/So3DAnnotation.h>
 #include <Gui/Inventor/SoToggleSwitch.h>
 #include <Mod/Part/Gui/ViewProviderPreviewExtension.h>
 
@@ -988,6 +989,7 @@ private:
     std::string editObjName;
     std::string editSubName;
 
+    Gui::So3DAnnotation* pcGridAnnotation = nullptr;
     Gui::CoinPtr<SoSketchFaces> pcSketchFaces;
     Gui::CoinPtr<SoToggleSwitch> pcSketchFacesToggle;
 
