@@ -1,3 +1,4 @@
+
 /***************************************************************************
  *   Copyright (c) 2009 Juergen Riegel <juergen.riegel@web.de>             *
  *                                                                         *
@@ -24,6 +25,7 @@
 #define SKETCHERGUI_VIEWPROVIDERSKETCH_H
 
 #include <Inventor/SoRenderManager.h>
+#include <Inventor/nodes/SoAnnotation.h>
 #include <Inventor/sensors/SoNodeSensor.h>
 #include <QCoreApplication>
 #include <QMetaObject>
@@ -1012,6 +1014,8 @@ private:
     int viewOrientationFactor;  // stores if sketch viewed from front or back
 
     bool blockContextMenu;
+
+    SoAnnotation* pcModeSwitchAnnotation = nullptr;
 };
 
 }  // namespace SketcherGui
