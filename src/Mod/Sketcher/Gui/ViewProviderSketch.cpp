@@ -684,6 +684,9 @@ ViewProviderSketch::~ViewProviderSketch()
     if (pcGridAnnotation) {
         pcGridAnnotation->unref();
     }
+    if (pcModeSwitchAnnotation) {
+        pcModeSwitchAnnotation->unref();
+    }
 }
 
 void ViewProviderSketch::slotUndoDocument(const Gui::Document& /*doc*/)
@@ -3657,7 +3660,16 @@ bool ViewProviderSketch::getDetailPath(
         }
     }
 
-    return ViewProvider2DObject::getDetailPath(subname, pPath, append, det);
+    if (ViewProvider2DObject::getDetailPath(subname, pPath, append, det)) {
+        return true;
+    }
+    // pcModeSwitch was wrapped in SoAnnotation
+    if (pcModeSwitchAnnotation) {
+        pPath->append(pcRoot);
+        pPath->append(pcModeSwitch);
+        return true;
+    }
+    return false;
 }
 // clang-format off
 
@@ -3665,7 +3677,13 @@ void ViewProviderSketch::attach(App::DocumentObject* pcFeat)
 {
     ViewProvider2DObject::attach(pcFeat);
 
-    getOrCreateAnnotation()->addChild(pcSketchFacesToggle);
+    // Extract the mode switch from root and wrap it in a SoAnnotation to draw on top
+    pcModeSwitchAnnotation = new SoAnnotation;
+    pcModeSwitchAnnotation->ref();
+    pcModeSwitchAnnotation->setName("SketchModeSwitchAnnotation");
+    pcModeSwitchAnnotation->addChild(pcModeSwitch);
+    pcRoot->removeChild(pcModeSwitch);
+    pcRoot->addChild(pcModeSwitchAnnotation);
 }
 
 void ViewProviderSketch::setupContextMenu(QMenu* menu, QObject* receiver, const char* member)

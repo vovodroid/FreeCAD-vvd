@@ -27,6 +27,7 @@
 #include <boost/smart_ptr/scoped_ptr.hpp>
 
 #include <Inventor/SoRenderManager.h>
+#include <Inventor/nodes/SoAnnotation.h>
 #include <Inventor/sensors/SoNodeSensor.h>
 #include <QCoreApplication>
 #include <QMetaObject>
@@ -1037,6 +1038,8 @@ private:
 
     bool blockContextMenu;
     std::stringstream sketchBackup;
+
+    SoAnnotation* pcModeSwitchAnnotation = nullptr;
 };
 
 }  // namespace SketcherGui
