@@ -502,7 +502,7 @@ void DlgSettingsGeneral::addIconSizes(int current)
 {
     ui->toolbarIconSize->clear();
 
-    QList<int> sizes {16, 24, 32, 48};
+    QList<int> sizes {16, 24, 32, 48, 22};
     if (!sizes.contains(current)) {
         sizes.append(current);
     }
