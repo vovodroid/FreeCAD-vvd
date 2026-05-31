@@ -1083,13 +1083,19 @@ void CmdPartDesignMoveFeatureInTree::activated(int iMsg)
     // Ask user to select the target feature
     bool ok;
     QStringList items;
+    QStringList allItems;
     if (bodyBase) {
         items.push_back(QString::fromUtf8(bodyBase->Label.getValue()));
     }
     else {
         items.push_back(QObject::tr("Beginning of the body"));
     }
+    allItems.push_back(items.front());
     for (auto feat : model) {
+        allItems.push_back(QString::fromUtf8(feat->Label.getValue()));
+        if (feat->isDerivedFrom<Sketcher::SketchObject>()) {
+            continue;
+        }
         items.push_back(QString::fromUtf8(feat->Label.getValue()));
     }
 
@@ -1106,7 +1112,7 @@ void CmdPartDesignMoveFeatureInTree::activated(int iMsg)
     if (!ok) {
         return;
     }
-    int index = items.indexOf(text);
+    int index = allItems.indexOf(text);
     // first object is the beginning of the body
     App::DocumentObject* target = index != 0 ? model[index - 1] : nullptr;
 
